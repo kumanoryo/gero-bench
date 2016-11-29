@@ -12,8 +12,7 @@ echo_begin_script
 run gcloud deployment-manager deployments create "${BUCKET_NAME}" \
 --config deployment-manager/bucket.py \
 --properties \
-location="${REGION}", \
-storageClass="${BUCKET_CLASS}"
+location="${REGION}",storageClass="${BUCKET_CLASS}"
 
 echo_end_script
 
