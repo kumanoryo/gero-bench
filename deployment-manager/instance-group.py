@@ -30,7 +30,11 @@ def GenerateConfig(context):
                   'boot': True
                   }],
               'networkInterfaces': [{
-                  'network': network_name
+                   'accessConfigs': [{
+                      'name': 'external-nat',
+                      'type': 'ONE_TO_ONE_NAT'
+                      }],
+                   'network': network_name
                   }],
               'serviceAccounts': [{
                   'scopes': [
