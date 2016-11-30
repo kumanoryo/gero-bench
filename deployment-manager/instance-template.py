@@ -2,6 +2,10 @@ def GenerateConfig(context):
   startup_script = ''.join(['gs://',
                             context.properties['bucket_name'],
                             '/startup-script/start.sh'])
+  network_name = ''.join(['https://www.googleapis.com/compute/v1/projects/',
+                          context.env['project'],
+                          '/global/networks/',
+                          context.properties['network']])
   resources = [{
       'name': context.env['deployment'],
       'type': 'compute.v1.instanceTemplate',
@@ -21,7 +25,7 @@ def GenerateConfig(context):
                   'boot': True
                   }],
               'networkInterfaces': [{
-                  'network': context.properties['network']
+                  'network': network_name
                   }],
               'serviceAccounts': [{
                   'scopes': [
