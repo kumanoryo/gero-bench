@@ -11,13 +11,13 @@ def GenerateConfig(context):
               'items': ['gero-bench-client']
               },
           'scheduling': {
-              'automaticRestart': true,
+              'automaticRestart': True,
               'onHostMaintenance': "MIGRATE"
               },
           'disks': [{
               'source': context.properties['source'],
-              'autoDelete': true,
-              'boot': true
+              'autoDelete': True,
+              'boot': True
               }],
           'networkInterfaces': [{
               'network': context.properties['network']
