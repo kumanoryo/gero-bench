@@ -3,4 +3,4 @@
 - yum: name=libtool
 - yum: name=mysql-devel
 - yum: name=mysql
-- yum: name=apr-util
+- yum: name=httpd-tools
