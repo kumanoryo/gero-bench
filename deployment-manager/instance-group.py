@@ -12,7 +12,7 @@ def GenerateConfig(context):
                     '/global/images/',
                     context.properties['source']])
   resources = [{
-      'name': context.env['deployment'],
+      'name': context.properties['instanceTemplate'],
       'type': 'compute.v1.instanceTemplate',
       'properties': {
           'properties': {
@@ -46,6 +46,15 @@ def GenerateConfig(context):
                   }
               }
           }
-    }]
+    }, {
+        'name': context.properties['instanceGroupManager'],
+        'type': 'compute.v1.instanceGroupManager',
+        'properties': {
+            'zone': context.properties['zone'],
+            'targetSize': 0,
+            'baseInstanceName': context.properties['baseInstanceName'],
+            'instanceTemplate': '$(ref.' + context.properties['instanceTemplate'] + '.selfLink)'
+            }
+   }]
 
   return {'resources': resources}
