@@ -6,6 +6,11 @@ def GenerateConfig(context):
                           context.env['project'],
                           '/global/networks/',
                           context.properties['network']])
+  image = ''.join(['https://www.googleapis.com/compute/v1/',
+                    'projects/',
+                    context.env['project'],
+                    '/global/images/',
+                    context.properties['source']])
   resources = [{
       'name': context.env['deployment'],
       'type': 'compute.v1.instanceTemplate',
@@ -20,7 +25,7 @@ def GenerateConfig(context):
                   'onHostMaintenance': "MIGRATE"
                   },
               'disks': [{
-                  'source': context.properties['source'],
+                  'initializeParams': {'sourceImage': image},
                   'autoDelete': True,
                   'boot': True
                   }],
