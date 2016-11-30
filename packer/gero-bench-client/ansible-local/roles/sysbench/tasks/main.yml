@@ -1,0 +1,6 @@
+- file: path=/src/sysbench  state=directory owner=root group=root mode=0755
+- copy: src=src/sysbench/install_sysbench.sh  dest=/src/sysbench/install_sysbench.sh owner=root group=root mode=0755
+- command: sh /src/sysbench/install_sysbench.sh
+- copy: src=srv/sysbench dest=/srv
+- template: src=srv/sysbench/read-heavy.sh.j2 dest=/srv/sysbench/read-heavy.sh
+- template: src=srv/sysbench/write-heavy.sh.j2 dest=/srv/sysbench/write-heavy.sh

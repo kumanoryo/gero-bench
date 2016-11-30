@@ -1,0 +1,50 @@
+{
+  "variables": {
+      "project_id": "{{env `PK_VAR_project_id`}}"
+      ,"source_image": "{{env `PK_VAR_source_image`}}"
+      ,"network": "{{env `PK_VAR_network`}}"
+      ,"zone": "{{env `PK_VAR_zone`}}"
+      ,"image_name": "{{env `PK_VAR_image_name`}}"
+      ,"ssh_username": "{{env `PK_VAR_ssh_username`}}"
+      ,"packer_dir": "{{env `PK_VAR_packer_dir`}}"
+      ,"cloudsql_instance_name": "{{env `PK_VAR_cloudsql_instance_name`}}"
+      ,"bucket_name": "{{env `PK_VAR_bucket_name`}}"
+  }
+  ,"builders": [
+    {
+      "type": "googlecompute"
+      ,"project_id": "{{user `project_id`}}"
+      ,"source_image": "{{user `source_image`}}"
+      ,"network": "{{user `network`}}"
+      ,"zone": "{{user `zone`}}"
+      ,"image_name": "{{user `image_name`}}"
+      ,"ssh_username": "{{user `ssh_username`}}"
+      ,"communicator": "ssh"
+      ,"ssh_pty": "true"
+    }
+  ]
+  ,"provisioners": [
+    {
+      "type": "shell"
+      ,"inline": [
+         "sudo yum -y update"
+        ,"sudo yum -y install epel-release"
+        ,"sudo yum -y install python-pip --enablerepo=epel"
+        ,"sudo yum -y install python-devel libffi-devel openssl-devel gcc"
+        ,"sudo pip install pip --upgrade"
+        ,"sudo pip install ansible --upgrade"
+      ]
+    }
+    ,{
+      "type": "file"
+      ,"source": "/opt/ansible-local"
+      ,"destination": "/tmp"
+    }
+    ,{
+      "type": "ansible-local"
+      ,"playbook_file": "/opt/ansible-local/site.yml"
+      ,"staging_directory": "/tmp/ansible-local"
+      ,"extra_arguments": [ "--extra-vars \"cloudsql_instance_name={{user `cloudsql_instance_name`}} project_id={{user `project_id`}} bucket_name={{user `bucket_name`}}\"" ]
+    }
+  ]
+}

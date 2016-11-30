@@ -1,0 +1,6 @@
+- yum: name=bzr
+- yum: name=automake
+- yum: name=libtool
+- yum: name=mysql-devel
+- yum: name=mysql
+- yum: name=apr-util

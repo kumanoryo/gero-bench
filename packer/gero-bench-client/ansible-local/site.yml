@@ -1,0 +1,6 @@
+- name: config server image
+  hosts: localhost
+  become: yes
+  roles:
+    - yum-installs
+    - sysbench

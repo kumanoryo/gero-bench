@@ -1,0 +1,63 @@
+#!/bin/sh
+
+set -u
+
+SYSBENCH_DIR="/srv/sysbench/src/sysbench"
+
+CMDNAME=$(basename "$0")
+USAGE="Usage: ${CMDNAME} -h HOST [-u USER] [-p PASSWORD] [-d DATABASE] [-b BUCKET] [-t TIME]"
+
+
+while getopts h:b:u:p:d:t: OPT
+do
+  case $OPT in
+    "h" ) VALUE_HOST="$OPTARG" ;;
+    "b" ) VALUE_BUCKET="$OPTARG" ;;
+    "u" ) VALUE_USER="$OPTARG" ;;
+    "p" ) VALUE_PASSWORD="$OPTARG" ;;
+    "d" ) VALUE_DATABASE="$OPTARG" ;;
+    "t" ) VALUE_MAX_TIME="$OPTARG" ;;
+      * ) echo "${USAGE}" 1>&2
+          exit 1 ;;
+  esac
+done
+
+if [ -z "${VALUE_HOST}" ]; then
+  echo "${USAGE}"
+  exit 1
+fi
+
+MYSQL_IP="${VALUE_HOST}"
+BUCKET_NAME="${VALUE_BUCKET:-{{ bucket_name }}}"
+SYSBENCH_USER="${VALUE_USER:-sysbench}"
+SYSBENCH_PASSWORD="${VALUE_PASSWORD:-sysbench}"
+SYSBENCH_DB="${VALUE_DATABASE:-sbtest}"
+MAX_TIME="${VALUE_MAX_TIME:-600}"
+RESULT_FILE="$(basename "$0")_$(date +%Y%m%d-%H%M)_$(hostname).log"
+
+trap 'rm -f ${RESULT_FILE}' EXIT
+
+"${SYSBENCH_DIR}"/sysbench \
+--test="${SYSBENCH_DIR}"/tests/db/oltp.lua \
+--mysql-host="${MYSQL_IP}" \
+--oltp-tables-count=250 \
+--mysql-user="${SYSBENCH_USER}" \
+--mysql-password="${SYSBENCH_PASSWORD}" \
+--mysql-port=3306 \
+--db-driver=mysql \
+--oltp-table-size=25000 \
+--mysql-db="${SYSBENCH_DB}" \
+--max-requests=0 \
+--max-time="${MAX_TIME}" \
+--oltp_simple_ranges=0 \
+--oltp-distinct-ranges=0 \
+--oltp-sum-ranges=0 \
+--oltp-order-ranges=0 \
+--oltp-point-selects=0 \
+--num-threads=1000 \
+--rand-type=uniform \
+run > /tmp/"${RESULT_FILE}"
+
+cat /tmp/"${RESULT_FILE}"
+
+gsutil cp /tmp/"${RESULT_FILE}" "gs://${BUCKET_NAME}/logs/${RESULT_FILE}"
