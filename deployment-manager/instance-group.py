@@ -45,7 +45,8 @@ def GenerateConfig(context):
                   }],
               'metadata': {
                   'items': [{
-                      'startup-script-url': startup_script
+                      'key': 'startup-script-url',
+                      'value': startup_script
                       }]
                   }
               }
