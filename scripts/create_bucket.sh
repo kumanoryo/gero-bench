@@ -7,10 +7,13 @@ SCRIPTS_DIR=$(cd "$(dirname "$0")" && pwd)
 # shellcheck source=./initializing.sh
 . "${SCRIPTS_DIR}/function/initializing.sh"
 
+HOME_DIR=$(cd "$(dirname "$0")"/..;pwd) || exit 1
+DM_DIR="${HOME_DIR}/deployment-manager"
+
 echo_begin_script
 
 run gcloud deployment-manager deployments create "${BUCKET_NAME}" \
---config deployment-manager/bucket.py \
+--config "${DM_DIR}"/bucket.py \
 --properties \
 location="${REGION}",storageClass="${BUCKET_CLASS}"
 

@@ -8,6 +8,7 @@ SCRIPTS_DIR=$(cd "$(dirname "$0")" && pwd)
 . "${SCRIPTS_DIR}/function/initializing.sh"
 
 HOME_DIR=$(cd "$(dirname "$0")"/..;pwd) || exit 1
+DM_DIR="${HOME_DIR}/deployment-manager"
 STARTUP_SCRIPT_DIR="${HOME_DIR}/startup-script"
 
 echo_begin_script
